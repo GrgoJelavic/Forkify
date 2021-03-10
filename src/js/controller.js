@@ -3,6 +3,7 @@ import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -20,16 +21,23 @@ const controlRecipes = async function () {
 
     if (!id) return;
     recipeView.renderSpinner();
+
     // Update result view to mark selected search result
     resultsView.update(model.getSearchResultsPage());
 
-    //1) Loading recipe
+    // Updating bookmarks view
+    bookmarksView.update(model.state.bookmarks);
+
+    // Loading recipe
     await model.loadRecipe(id);
 
-    //2) Rendering recipe
+    // Rendering recipe
     recipeView.render(model.state.recipe);
+
+    // debugger;
   } catch (error) {
     recipeView.renderError();
+    console.error(error);
   }
 };
 
@@ -75,10 +83,35 @@ const controlServings = function (newServings) {
   recipeView.update(model.state.recipe);
 };
 
+const controlAddBookmark = function () {
+  // console.log(model.state.recipe.bookmarked);
+  //add  bookmark
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id); //delete bookmark
+
+  // console.log(model.state.recipe);
+  //update recipe view
+  recipeView.update(model.state.recipe);
+
+  //render bookmarks
+  bookmarksView.render(model.state.bookmarks);
+};
+
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerUpdateBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerPagClick(controlPagination);
 };
 init();
+
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
+};
+// clearBookmarks();
