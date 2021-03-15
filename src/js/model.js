@@ -35,7 +35,6 @@ export const loadRecipe = async function (id) {
     const data = await AJAX(`${API_URL}${id}?key=${KEY}`);
 
     state.recipe = createRecipeObject(data);
-    console.log(state.recipe);
 
     if (state.bookmarks.some((bookmark) => bookmark.id === id))
       state.recipe.bookmarked = true;
@@ -51,7 +50,6 @@ export const loadSearchResults = async function (query) {
     state.search.query = query;
 
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
-    console.log(data);
 
     state.search.results = data.data.recipes.map((rec) => {
       return {
@@ -63,7 +61,6 @@ export const loadSearchResults = async function (query) {
       };
     });
     state.search.page = 1;
-    // console.log(state.search.results);
   } catch (err) {
     console.error(`${err} 💣💣💣💣💣💣💣`);
     throw err;
@@ -119,7 +116,7 @@ const init = function () {
   if (storage) state.bookmarks = JSON.parse(storage);
 };
 init();
-// console.log(state.bookmarks);
+
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');
 };
@@ -127,11 +124,10 @@ const clearBookmarks = function () {
 
 export const uploadRecipe = async function (newRecipe) {
   try {
-    console.log(Object.entries(newRecipe));
+    // console.log(Object.entries(newRecipe));
     const ingredients = Object.entries(newRecipe)
       .filter((entry) => entry[0].startsWith('ingredient') && entry[1] !== '')
       .map((ing) => {
-        // const ingArr = ing[1].replaceAll(' ', '').split(',');
         const ingArr = ing[1].split(',').map((el) => el.trim());
         if (ingArr.length !== 3)
           throw new Error(
@@ -152,10 +148,9 @@ export const uploadRecipe = async function (newRecipe) {
       servings: +newRecipe.servings,
       ingredients,
     };
-    // console.log(ingredients);
 
     const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
-    // console.log(data);
+
     state.recipe = createRecipeObject(data);
     addBookmark(state.recipe);
   } catch (err) {

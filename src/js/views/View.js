@@ -3,6 +3,16 @@ import icons from 'url:../../img/icons.svg';
 export default class View {
   _data;
 
+  /**
+   * Render the recieved object to the DOM
+   * @param {Object | Object[]} data The data to be rendered (recipe)
+   * @param {boolean} [render = true]
+   * @returns {undefined | string} A markup string is returned if render is false
+   * @this {Object}  View (Object instance)
+   * @author Grgo Jelavic
+   * @todo Finish implementation
+   */
+
   render(data, render = true) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
@@ -17,8 +27,6 @@ export default class View {
   }
 
   update(data) {
-    // if (!data || (Array.isArray(data) && data.length === 0))
-    //   return this.renderError();
     this._data = data;
     const newMarkup = this._generateMarkup();
 
@@ -26,25 +34,20 @@ export default class View {
 
     const newDOMElements = Array.from(newDOM.querySelectorAll('*'));
     const currElements = Array.from(this._parentElement.querySelectorAll('*'));
-    // console.log(currElements);
-    // console.log(newDOMElements);
 
     newDOMElements.forEach((newEl, i) => {
       const currEl = currElements[i];
-      // console.log(currEl, newEl.isEqualNode(currEl));
 
-      //change text update
+      // change text update
       if (
         !newEl.isEqualNode(currEl) &&
         newEl.firstChild?.nodeValue.trim() !== ''
       ) {
-        // console.log('****', newEl.firstChild.nodeValue.trim());
         currEl.textContent = newEl.textContent;
       }
 
-      //change attributes update
+      // change attributes update
       if (!newEl.isEqualNode(currEl)) {
-        // console.log(Array.from(newEl.attributes));
         Array.from(newEl.attributes).forEach((attr) =>
           currEl.setAttribute(attr.name, attr.value)
         );
@@ -53,7 +56,6 @@ export default class View {
   }
 
   _clear() {
-    // console.log(this._parentElement);
     this._parentElement.innerHTML = '';
   }
 
