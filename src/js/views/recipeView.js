@@ -1,7 +1,6 @@
 import View from './View.js';
 import icons from 'url:../../img/icons.svg';
 import { Fraction } from 'fractional';
-// console.log(Fraction);
 
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
@@ -20,10 +19,8 @@ class RecipeView extends View {
 
       if (!btn) return;
 
-      // console.log(btn);
       const { updateTo } = btn.dataset;
 
-      // console.log(updateTo);
       if (+updateTo > 0 && +updateTo <= 100) handler(+updateTo);
     });
   }
